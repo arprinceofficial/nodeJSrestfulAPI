@@ -16,7 +16,11 @@ module.exports = {
             }
             return res.status(200).json({
                 success: 1,
-                data: results
+                Show_Data_Insert_Values: results,
+                data: {
+                    id: results.insertId,
+                    ...body
+                }
             });
         });
     }
