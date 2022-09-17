@@ -5,9 +5,17 @@ const pool = createPool({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
-    database: process.env.DB_DATABASE,
+    database: process.env.DB_NAME,
     connectionLimit: 10
 });
 
-// reusing the connection pool in other files
+// export default pool to use in other files exp. service.js
 module.exports = pool;
+
+
+// var connection = mysql.createConnection({
+//     host: 'localhost',
+//     user: 'me',
+//     password: 'secret',
+//     database: 'my_db'
+// });
