@@ -11,11 +11,3 @@ const pool = createPool({
 
 // export default pool to use in other files exp. service.js
 module.exports = pool;
-
-
-// var connection = mysql.createConnection({
-//     host: 'localhost',
-//     user: 'me',
-//     password: 'secret',
-//     database: 'my_db'
-// });
