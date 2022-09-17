@@ -19,7 +19,13 @@ module.exports = {
                 Show_Data_Insert_Values: results,
                 data: {
                     id: results.insertId,
-                    ...body
+                    // ...body
+                    first_name: body.first_name,
+                    last_name: body.last_name,
+                    gender: body.gender,
+                    email: body.email,
+                    // password: body.password,
+                    number: Number(body.number)
                 }
             });
         });
