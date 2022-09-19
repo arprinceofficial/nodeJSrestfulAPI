@@ -98,11 +98,12 @@ module.exports = {
     deleteUser: (req, res) => {
         const data = req.body;
         deleteUser(data, (err, results) => {
+            console.log(results.affectedRows);
             if (err) {
                 console.log(err);
                 return;
             }
-            if (!results) {
+            if (results.affectedRows == 0) {
                 return res.json({
                     success: 0,
                     message: "Record not found"
