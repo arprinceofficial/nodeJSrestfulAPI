@@ -137,7 +137,14 @@ module.exports = {
                 });
                 return res.json({
                     success: 1,
-                    data: results,
+                    // data: results,
+                    data: {
+                        id: results.ID,
+                        first_name: results.FIRSTNAME,
+                        last_name: results.LASTNAME,
+                        email: results.EMAIL,
+                        number: results.NUMBER,
+                    },
                     token: jsontoken
                 })
             }else{
