@@ -104,7 +104,7 @@ module.exports = {
             }
             if (!results) {
                 return res.json({
-                    success: 1,
+                    success: 0,
                     message: "Record not found"
                 });
             }
@@ -136,22 +136,29 @@ module.exports = {
                     expiresIn: "1h"
                 });
                 return res.json({
-                    success: 1,
+                    code: 200,
+                    status: "success",
+                    // success: 1,
                     // data: results,
+                    message: "loginID " + results.id,
                     data: {
-                        id: results.ID,
-                        first_name: results.FIRSTNAME,
-                        last_name: results.LASTNAME,
-                        email: results.EMAIL,
-                        number: results.NUMBER,
+                        token: {
+                            access_token: jsontoken,
+                        },
+                        user: {
+                            id: results.ID,
+                            first_name: results.FIRSTNAME,
+                            last_name: results.LASTNAME,
+                            email: results.EMAIL,
+                            number: results.NUMBER,
+                        }
                     },
-                    token: jsontoken
                 })
-            }else{
+            } else {
                 return res.json({
                     success: 0,
                     message: "Invalid Password"
-                    
+
                 })
             }
 
