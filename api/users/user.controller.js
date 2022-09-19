@@ -1,12 +1,13 @@
-const { genSaltSync, hashSync } = require("bcrypt");
+// const { genSaltSync, hashSync, compareSync } = require("bcrypt");
+const { sign } = require("jsonwebtoken");
 const {
     create,
     getUsersById,
     getUsers,
     updateUser,
-    deleteUser
+    deleteUser,
+    getUserByUserEmail,
 } = require("./user.service");
-// const { genSaltSync, hashSync } = require("bcrypt");
 
 module.exports = {
     createUser: (req, res) => {
@@ -18,7 +19,7 @@ module.exports = {
                 console.log(err);
                 return res.status(500).json({
                     success: 0,
-                    message: "Database connection error"
+                    message: "Email Should Be Unique or Database connection error"
                 });
             }
             return res.status(200).json({
@@ -97,13 +98,14 @@ module.exports = {
     deleteUser: (req, res) => {
         const data = req.body;
         deleteUser(data, (err, results) => {
+            console.log(results.affectedRows);
             if (err) {
                 console.log(err);
                 return;
             }
-            if (!results) {
+            if (results.affectedRows == 0) {
                 return res.json({
-                    success: 1,
+                    success: 0,
                     message: "Record not found"
                 });
             }
@@ -112,5 +114,55 @@ module.exports = {
                 message: "user delete successfully"
             })
         })
+    },
+    login: (req, res) => {
+        const body = req.body;
+        getUserByUserEmail(body.email, (err, results) => {
+            // console.log('results', results.PASSWORD);
+            // console.log('body', body.password);
+
+            if (err) {
+                console.log(err);
+                return;
+            }
+            if (!results) {
+                return res.json({
+                    success: 0,
+                    message: "Record not found"
+                })
+            }
+            const pass = results.PASSWORD ? results.PASSWORD : undefined;
+            if (pass == body.password) {
+                const jsontoken = sign({ result: results }, "qwe1234", {
+                    expiresIn: "1h"
+                });
+                return res.json({
+                    code: 200,
+                    status: "success",
+                    // success: 1,
+                    // data: results,
+                    message: "loginID " + results.ID,
+                    data: {
+                        token: {
+                            access_token: jsontoken,
+                        },
+                        user: {
+                            id: results.ID,
+                            first_name: results.FIRSTNAME,
+                            last_name: results.LASTNAME,
+                            email: results.EMAIL,
+                            number: results.NUMBER,
+                        }
+                    },
+                })
+            } else {
+                return res.json({
+                    success: 0,
+                    message: "Invalid Password"
+
+                })
+            }
+
+        });
     }
 }
