@@ -23,7 +23,8 @@ module.exports = {
                 });
             }
             return res.status(200).json({
-                success: 1,
+                code: 200,
+                status: "success",
                 Show_Data_Insert_Values: results,
                 data: {
                     id: results.insertId,
@@ -99,7 +100,7 @@ module.exports = {
         const id = req.params.id;
         deleteUser(id, (err, results) => {
             // console.log(results, id);
-            console.log("affectedRows =",results.affectedRows,"and", "id =",id);
+            console.log("affectedRows =", results.affectedRows, "and", "id =", id);
             if (err) {
                 console.log(err);
                 return;
