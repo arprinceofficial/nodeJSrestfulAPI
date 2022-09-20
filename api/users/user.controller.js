@@ -96,9 +96,10 @@ module.exports = {
         })
     },
     deleteUser: (req, res) => {
-        const data = req.body;
-        deleteUser(data, (err, results) => {
-            console.log(results.affectedRows);
+        const id = req.params.id;
+        deleteUser(id, (err, results) => {
+            // console.log(results, id);
+            console.log("affectedRows =",results.affectedRows,"and", "id =",id);
             if (err) {
                 console.log(err);
                 return;

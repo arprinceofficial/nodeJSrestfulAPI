@@ -62,9 +62,9 @@ module.exports = {
             }
         )
     },
-    deleteUser: (data, callBack) => {
+    deleteUser: (id, callBack) => {
         pool.query(
-            `delete from registration where id = ?`, [data.id],
+            `delete from registration where id = ?`, [id],
             (error, results, fields) => {
                 if (error) {
                     return callBack(error);
