@@ -2,9 +2,9 @@ require("dotenv").config();
 const express = require('express');
 var cors = require('cors');
 const app = express();
-var allowedOrigins = ['http://localhost:8080'];
+var allowedOrigins = ['http://localhost:8080', 'http://192.168.1.7:8080'];
 app.use(cors({
-    origin: function (origin, callback) {
+    origin: function(origin, callback) {
         // allow requests with no origin 
         // (like mobile apps or curl requests)
         if (!origin) return callback(null, true);
