@@ -138,6 +138,7 @@ module.exports = {
                     expiresIn: "1h"
                 });
                 return res.json({
+                    access_token: jsontoken,
                     code: 200,
                     status: "success",
                     // success: 1,
