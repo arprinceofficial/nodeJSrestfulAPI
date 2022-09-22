@@ -21,22 +21,29 @@ module.exports = {
                     success: 0,
                     message: "Email Should Be Unique or Database connection error"
                 });
+            } else {
+                const jsontoken = sign({ result: results }, "qwe1234", {
+                    expiresIn: "1h"
+                });
+                return res.status(200).json({
+                    access_token: jsontoken,
+                    code: 200,
+                    status: "success",
+                    Show_Data_Insert_Values: results,
+                    data: {
+                        user: {
+                            id: results.insertId,
+                            // ...body
+                            first_name: body.first_name,
+                            last_name: body.last_name,
+                            gender: body.gender,
+                            email: body.email,
+                            // password: body.password,
+                            number: Number(body.number)
+                        }
+                    }
+                });
             }
-            return res.status(200).json({
-                code: 200,
-                status: "success",
-                Show_Data_Insert_Values: results,
-                data: {
-                    id: results.insertId,
-                    // ...body
-                    first_name: body.first_name,
-                    last_name: body.last_name,
-                    gender: body.gender,
-                    email: body.email,
-                    // password: body.password,
-                    number: Number(body.number)
-                }
-            });
         });
     },
     getUsersById: (req, res) => {
