@@ -83,5 +83,16 @@ module.exports = {
                 return callBack(null, results[0]);
             }
         )
+    },
+    getGender: callBack => {
+        pool.query(
+            `SELECT ID, GENDER_NAME FROM GENDER`, [],
+            (error, results, fields) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
     }
 }

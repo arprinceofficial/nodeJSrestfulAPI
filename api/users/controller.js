@@ -7,6 +7,7 @@ const {
     updateUser,
     deleteUser,
     getUserByUserEmail,
+    getGender,
 } = require("./service");
 
 module.exports = {
@@ -174,5 +175,18 @@ module.exports = {
             }
 
         });
-    }
+    },
+    getGender: (req, res) => {
+        getGender((err, results) => {
+            if (err) {
+                console.log(err);
+                return;
+            }
+            return res.json({
+                success: 1,
+                length: results.length,
+                data: results
+            })
+        })
+    },
 }
