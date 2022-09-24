@@ -94,5 +94,19 @@ module.exports = {
                 return callBack(null, results);
             }
         )
-    }
+    },
+    forgetPassword: (data, callBack) => {
+        pool.query(
+            `update registration set password=? where email = ?`, [
+                data.password,
+                data.email
+            ],
+            (error, results, fields) => {
+                if (error) {
+                    return callBack(error);
+                }
+                return callBack(null, results);
+            }
+        )
+    },
 }

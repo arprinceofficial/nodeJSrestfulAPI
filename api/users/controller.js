@@ -1,4 +1,4 @@
-// const { genSaltSync, hashSync, compareSync } = require("bcrypt");
+const { genSaltSync, hashSync, compareSync } = require("bcrypt");
 const { sign } = require("jsonwebtoken");
 const {
     create,
@@ -8,13 +8,14 @@ const {
     deleteUser,
     getUserByUserEmail,
     getGender,
+    forgetPassword,
 } = require("./service");
 
 module.exports = {
     createUser: (req, res) => {
         const body = req.body;
-        // const salt = genSaltSync(10);
-        // body.password = hashSync(body.password, salt);
+        const salt = genSaltSync(10);
+        body.password = hashSync(body.password, salt);
         create(body, (err, results) => {
             if (err) {
                 console.log(err);
@@ -141,8 +142,9 @@ module.exports = {
                     message: "Record not found"
                 })
             }
-            const pass = results.PASSWORD ? results.PASSWORD : undefined;
-            if (pass == body.password) {
+            const result = compareSync(body.password, results.PASSWORD);
+            if (result) {
+                results.PASSWORD = undefined;
                 const jsontoken = sign({ result: results }, "qwe1234", {
                     expiresIn: "1h"
                 });
@@ -194,4 +196,40 @@ module.exports = {
             })
         })
     },
+    forgetPassword: (req, res) => {
+        const body = req.body;
+        const salt = genSaltSync(10);
+        body.password = hashSync(body.password, salt);
+        forgetPassword(body, (err, results) => {
+            console.log('results', results);
+            console.log('body', body);
+            if (err) {
+                console.log(err);
+                return;
+            }
+            if (!results || body.email == null || body.email == undefined || body.email == "")
+                return res.json({
+                    success: 0,
+                    message: "Invalid id or id not found",
+                    data: {
+                        id: results.insertId,
+                        ...body
+                    }
+                })
+            else if (results.affectedRows == 0) {
+                return res.json({
+                    success: 0,
+                    message: "Invalid Email Address"
+                });
+            }
+            return res.json({
+                success: 1,
+                message: "updated successfully",
+                data: {
+                    id: results.insertId,
+                    ...body
+                }
+            })
+        })
+    }
 }
