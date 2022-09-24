@@ -7,7 +7,7 @@ const {
     updateUser,
     deleteUser,
     getUserByUserEmail,
-} = require("./user.service");
+} = require("./service");
 
 module.exports = {
     createUser: (req, res) => {
