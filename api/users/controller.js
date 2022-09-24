@@ -210,11 +210,11 @@ module.exports = {
             if (!results || body.email == null || body.email == undefined || body.email == "")
                 return res.json({
                     success: 0,
-                    message: "Invalid id or id not found",
-                    data: {
-                        id: results.insertId,
-                        ...body
-                    }
+                    message: "email not found",
+                    // data: {
+                    //     id: results.insertId,
+                    //     ...body
+                    // }
                 })
             else if (results.affectedRows == 0) {
                 return res.json({
@@ -225,10 +225,10 @@ module.exports = {
             return res.json({
                 success: 1,
                 message: "updated successfully",
-                data: {
-                    id: results.insertId,
-                    ...body
-                }
+                // data: {
+                //     id: results.insertId,
+                //     ...body
+                // }
             })
         })
     }
