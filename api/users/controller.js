@@ -185,7 +185,12 @@ module.exports = {
             return res.json({
                 success: 1,
                 length: results.length,
-                data: results
+                data: results.map((item) => {
+                    return {
+                        id: item.ID,
+                        gender: item.GENDER_NAME
+                    }
+                })
             })
         })
     },

@@ -17,6 +17,6 @@ router.get('/', checkToken, getUsers);
 router.post('/update', checkToken, updateUser);
 router.delete('/:id', checkToken, deleteUser)
 router.post('/login', login)
-router.get('/gender/list', checkToken, getGender);
+router.get('/gender/list', getGender);
 
 module.exports = router;
