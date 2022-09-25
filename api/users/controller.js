@@ -19,9 +19,17 @@ module.exports = {
         create(body, (err, results) => {
             if (err) {
                 console.log(err);
+                if (err.code === 'ER_DUP_ENTRY') {
+                    console.log(err.code);
+                    return res.status(200).json({
+                        success: 0,
+                        status: "error",
+                        message: "Email already exists"
+                    });
+                }
                 return res.status(500).json({
                     success: 0,
-                    message: "Email Should Be Unique or Database connection error"
+                    message: "Database connection error"
                 });
             } else {
                 const jsontoken = sign({ result: results }, "qwe1234", {
