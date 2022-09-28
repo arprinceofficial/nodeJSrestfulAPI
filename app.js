@@ -15,7 +15,7 @@ app.use(cors({
         return callback(null, true);
     }
 }));
-const userRouter = require('./api/users/user.router');
+const userRouter = require('./api/users/router');
 
 app.use(express.json());
 app.use("/api/users", userRouter);

@@ -4,8 +4,10 @@ const {
     getUsers,
     updateUser,
     deleteUser,
-    login
-} = require('./user.controller');
+    login,
+    getGender,
+    forgetPassword,
+} = require('./controller');
 const router = require('express').Router();
 const { checkToken } = require('../../auth/token_validation');
 
@@ -16,5 +18,7 @@ router.get('/', checkToken, getUsers);
 router.post('/update', checkToken, updateUser);
 router.delete('/:id', checkToken, deleteUser)
 router.post('/login', login)
+router.get('/gender/list', getGender);
+router.post('/forget-Password', forgetPassword);
 
 module.exports = router;

@@ -1,4 +1,4 @@
-// const { genSaltSync, hashSync, compareSync } = require("bcrypt");
+const { genSaltSync, hashSync, compareSync } = require("bcrypt");
 const { sign } = require("jsonwebtoken");
 const {
     create,
@@ -7,35 +7,53 @@ const {
     updateUser,
     deleteUser,
     getUserByUserEmail,
-} = require("./user.service");
+    getGender,
+    forgetPassword,
+} = require("./service");
 
 module.exports = {
     createUser: (req, res) => {
         const body = req.body;
-        // const salt = genSaltSync(10);
-        // body.password = hashSync(body.password, salt);
+        const salt = genSaltSync(10);
+        body.password = hashSync(body.password, salt);
         create(body, (err, results) => {
             if (err) {
                 console.log(err);
+                if (err.code === 'ER_DUP_ENTRY') {
+                    console.log(err.code);
+                    return res.status(200).json({
+                        success: 0,
+                        status: "error",
+                        message: "Email already exists"
+                    });
+                }
                 return res.status(500).json({
                     success: 0,
-                    message: "Email Should Be Unique or Database connection error"
+                    message: "Database connection error"
+                });
+            } else {
+                const jsontoken = sign({ result: results }, "qwe1234", {
+                    expiresIn: "1h"
+                });
+                return res.status(200).json({
+                    access_token: jsontoken,
+                    code: 200,
+                    status: "success",
+                    Show_Data_Insert_Values: results,
+                    data: {
+                        user: {
+                            id: results.insertId,
+                            // ...body
+                            first_name: body.first_name,
+                            last_name: body.last_name,
+                            gender: body.gender,
+                            email: body.email,
+                            // password: body.password,
+                            number: Number(body.number)
+                        }
+                    }
                 });
             }
-            return res.status(200).json({
-                success: 1,
-                Show_Data_Insert_Values: results,
-                data: {
-                    id: results.insertId,
-                    // ...body
-                    first_name: body.first_name,
-                    last_name: body.last_name,
-                    gender: body.gender,
-                    email: body.email,
-                    // password: body.password,
-                    number: Number(body.number)
-                }
-            });
         });
     },
     getUsersById: (req, res) => {
@@ -99,7 +117,7 @@ module.exports = {
         const id = req.params.id;
         deleteUser(id, (err, results) => {
             // console.log(results, id);
-            console.log("affectedRows =",results.affectedRows,"and", "id =",id);
+            console.log("affectedRows =", results.affectedRows, "and", "id =", id);
             if (err) {
                 console.log(err);
                 return;
@@ -132,8 +150,9 @@ module.exports = {
                     message: "Record not found"
                 })
             }
-            const pass = results.PASSWORD ? results.PASSWORD : undefined;
-            if (pass == body.password) {
+            const result = compareSync(body.password, results.PASSWORD);
+            if (result) {
+                results.PASSWORD = undefined;
                 const jsontoken = sign({ result: results }, "qwe1234", {
                     expiresIn: "1h"
                 });
@@ -166,5 +185,59 @@ module.exports = {
             }
 
         });
+    },
+    getGender: (req, res) => {
+        getGender((err, results) => {
+            if (err) {
+                console.log(err);
+                return;
+            }
+            return res.json({
+                success: 1,
+                length: results.length,
+                data: results.map((item) => {
+                    return {
+                        id: item.ID,
+                        gender: item.GENDER_NAME
+                    }
+                })
+            })
+        })
+    },
+    forgetPassword: (req, res) => {
+        const body = req.body;
+        const salt = genSaltSync(10);
+        body.password = hashSync(body.password, salt);
+        forgetPassword(body, (err, results) => {
+            console.log('results', results);
+            console.log('body', body);
+            if (err) {
+                console.log(err);
+                return;
+            }
+            if (!results || body.email == null || body.email == undefined || body.email == "")
+                return res.json({
+                    success: 0,
+                    message: "email not found",
+                    // data: {
+                    //     id: results.insertId,
+                    //     ...body
+                    // }
+                })
+            else if (results.affectedRows == 0) {
+                return res.json({
+                    success: 0,
+                    message: "Invalid Email Address"
+                });
+            }
+            return res.json({
+                success: 1,
+                message: "updated successfully",
+                // data: {
+                //     id: results.insertId,
+                //     ...body
+                // }
+            })
+        })
     }
 }
