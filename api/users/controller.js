@@ -19,12 +19,19 @@ module.exports = {
         create(body, (err, results) => {
             if (err) {
                 console.log(err);
-                if (err.code === 'ER_DUP_ENTRY') {
+                if (err.code === 'ER_DUP_ENTRY' && err.sqlMessage === "Duplicate entry '" + body.email + "' for key 'EMAIL'") {
                     console.log(err.code);
                     return res.status(200).json({
                         success: 0,
                         status: "error",
                         message: "Email already exists"
+                    });
+                } else if (err.code === 'ER_DUP_ENTRY' && err.sqlMessage === "Duplicate entry '" + body.number + "' for key 'NUMBER'") {
+                    console.log(err.code);
+                    return res.status(200).json({
+                        success: 0,
+                        status: "error",
+                        message: "Number already exists"
                     });
                 }
                 return res.status(500).json({
