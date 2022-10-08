@@ -73,9 +73,10 @@ module.exports = {
             }
         )
     },
+    // login query for user
     getUserByUserEmail: (email, callBack) => {
         pool.query(
-            `select * from registration where email = ?`, [email],
+            `select * from registration where email = ? or number = ?`, [email, email],
             (error, results, fields) => {
                 if (error) {
                     return callBack(error);
